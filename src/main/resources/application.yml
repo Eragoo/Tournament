@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/tournament
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:admin}
+  flyway:
+    out-of-order: true
+  jpa:
+    show-sql: true
