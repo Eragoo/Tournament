@@ -23,6 +23,7 @@ dependencies {
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

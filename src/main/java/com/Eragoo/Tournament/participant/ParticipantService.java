@@ -1,5 +1,6 @@
 package com.Eragoo.Tournament.participant;
 
+import com.Eragoo.Tournament.error.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,6 @@ public class ParticipantService {
         return participantRepository.findAll()
                 .stream()
                 .map(participantMapper::entityToDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) ;
     }
 }

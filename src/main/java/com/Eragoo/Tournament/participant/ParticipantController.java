@@ -16,15 +16,6 @@ public class ParticipantController {
 
     @GetMapping
     private ResponseEntity<Set<ParticipantDto>> getAll() {
-        ParticipantDto p1 = new ParticipantDto();
-        p1.setId(1L);
-        p1.setName("lol");
-
-        ParticipantDto p2 = new ParticipantDto();
-        p2.setId(1L);
-        p2.setName("lol");
-
-        System.out.println("    ----------- \n " + (p1.hashCode() == p2.hashCode()));
         return ResponseEntity.ok(participantService.getAll());
     }
 }
