@@ -25,4 +25,14 @@ public class ParticipantService {
         Participant savedParticipant = participantRepository.save(participant);
         return participantMapper.entityToDto(savedParticipant);
     }
+
+    public void delete(long id) {
+        Participant participant = getParticipantIfExist(id);
+        participantRepository.delete(participant);
+    }
+
+    private Participant getParticipantIfExist(long id) {
+        return participantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Participant with id " + id + " not found"));
+    }
 }
