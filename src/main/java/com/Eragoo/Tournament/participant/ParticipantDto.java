@@ -1,12 +1,16 @@
 package com.Eragoo.Tournament.participant;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParticipantDto {
     private long id;
     private String name;
