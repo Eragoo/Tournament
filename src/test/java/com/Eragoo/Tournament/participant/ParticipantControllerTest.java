@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,6 +28,24 @@ public class ParticipantControllerTest {
     public void getAllReturns200() throws Exception {
         when(participantService.getAll()).thenReturn(Set.of(new ParticipantDto(1L, "Joe")));
         mockMvc.perform(get("/api/participant"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void saveParticipantWithBlankNameReturns400() throws Exception {
+        ParticipantCommand participantCommand = new ParticipantCommand("");
+
+        mockMvc.perform(post("/api/participant", participantCommand))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void saveCorrectParticipantReturns200() throws Exception {
+        ParticipantCommand participantCommand = new ParticipantCommand("Joe");
+        when(participantService.create(participantCommand)).thenReturn(new ParticipantDto(1L, "Joe"));
+
+        mockMvc.perform(post("/api/participant", participantCommand))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }

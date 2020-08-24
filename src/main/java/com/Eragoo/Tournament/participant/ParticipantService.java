@@ -19,4 +19,10 @@ public class ParticipantService {
                 .map(participantMapper::entityToDto)
                 .collect(Collectors.toSet()) ;
     }
+
+    public ParticipantDto create(ParticipantCommand command) {
+        Participant participant = participantMapper.commandToEntity(command);
+        Participant savedParticipant = participantRepository.save(participant);
+        return participantMapper.entityToDto(savedParticipant);
+    }
 }
