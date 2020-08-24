@@ -43,20 +43,7 @@ public class SwaggerConfig {
                 .fullyQualifiedClassName(
                         String.format("%s.generated.%s",
                                 Pageable.class.getPackage().getName(),
-                                Pageable.class.getSimpleName()))
-                .withProperties(Arrays.asList(
-                        property(Integer.class, "page"),
-                        property(Integer.class, "size"),
-                        property(Sort.class, "sort")
-                ))
-                .build();
-    }
-
-    private AlternateTypePropertyBuilder property(Class<?> type, String name) {
-        return new AlternateTypePropertyBuilder()
-                .withName(name)
-                .withType(type)
-                .withCanRead(true)
-                .withCanWrite(true);
+                                Pageable.class.getSimpleName())
+                ).build();
     }
 }
