@@ -3,11 +3,14 @@ package com.Eragoo.Tournament.tournament;
 import com.Eragoo.Tournament.error.exception.ConflictException;
 import com.Eragoo.Tournament.error.exception.NotFoundException;
 import com.Eragoo.Tournament.participant.Participant;
+import com.Eragoo.Tournament.participant.ParticipantRepository;
 import com.Eragoo.Tournament.tournament.match.MatchDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Service
@@ -15,6 +18,8 @@ import java.util.*;
 public class TournamentService {
     private TournamentRepository tournamentRepository;
     private TournamentMatchesLayerGenerator matchesLayerGenerator;
+    private TournamentMapper tournamentMapper;
+    private ParticipantRepository participantRepository;
 
     public GeneratedTournament start(@NotNull long tournamentId) {
         Tournament tournament = getTournamentIfExist(tournamentId);
@@ -27,6 +32,18 @@ public class TournamentService {
                 .matches(matches)
                 .matchesNumber(matchesNumber)
                 .build();
+    }
+
+    public TournamentDto create(@NotNull TournamentCommand tournamentCommand) {
+        Tournament tournament = tournamentMapper.commandToEntity(tournamentCommand);
+        Set<Long> participantsIds = tournamentCommand.getParticipantsIds();
+        Set<Participant> participants = participantRepository.findAllByIdIn(participantsIds);
+        validateParticipantsNumber(participants);
+        tournament.setParticipants(participants);
+        int matchesNumber = (participants.size() + 1) / 2;
+        tournament.setMatchesNumber(matchesNumber);
+        Tournament saved = tournamentRepository.save(tournament);
+        return tournamentMapper.entityToDto(saved);
     }
 
     private void validateParticipantsNumber(Set<Participant> participants) {

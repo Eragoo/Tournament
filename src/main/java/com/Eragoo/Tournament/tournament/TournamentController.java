@@ -2,10 +2,7 @@ package com.Eragoo.Tournament.tournament;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/tournament")
@@ -17,5 +14,10 @@ public class TournamentController {
     public ResponseEntity<GeneratedTournament> startMatch(@PathVariable Long id) {
         GeneratedTournament generatedTournament = tournamentService.start(id);
         return ResponseEntity.ok(generatedTournament);
+    }
+
+    @PostMapping
+    public ResponseEntity<TournamentDto> create(@RequestBody TournamentCommand tournamentCommand) {
+        return ResponseEntity.ok(tournamentService.create(tournamentCommand));
     }
 }
