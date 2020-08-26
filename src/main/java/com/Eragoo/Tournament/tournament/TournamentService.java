@@ -7,6 +7,7 @@ import com.Eragoo.Tournament.participant.ParticipantRepository;
 import com.Eragoo.Tournament.tournament.match.MatchDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,13 +16,14 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class TournamentService {
     private TournamentRepository tournamentRepository;
     private TournamentMatchesLayerGenerator matchesLayerGenerator;
     private TournamentMapper tournamentMapper;
     private ParticipantRepository participantRepository;
 
-    public GeneratedTournament start(@NotNull long tournamentId) {
+    public GeneratedTournament start(@NotNull Long tournamentId) {
         Tournament tournament = getTournamentIfExist(tournamentId);
 
         Set<Participant> participants = tournament.getParticipants();
@@ -44,6 +46,11 @@ public class TournamentService {
         tournament.setMatchesNumber(matchesNumber);
         Tournament saved = tournamentRepository.save(tournament);
         return tournamentMapper.entityToDto(saved);
+    }
+
+    public TournamentDto getById(@NotNull Long id) {
+        Tournament tournament = getTournamentIfExist(id);
+        return tournamentMapper.entityToDto(tournament);
     }
 
     private void validateParticipantsNumber(Set<Participant> participants) {

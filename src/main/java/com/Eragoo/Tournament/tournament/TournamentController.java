@@ -20,4 +20,9 @@ public class TournamentController {
     public ResponseEntity<TournamentDto> create(@RequestBody TournamentCommand tournamentCommand) {
         return ResponseEntity.ok(tournamentService.create(tournamentCommand));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TournamentDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(tournamentService.getById(id));
+    }
 }
