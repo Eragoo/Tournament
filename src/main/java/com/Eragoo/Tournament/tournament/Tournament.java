@@ -17,10 +17,10 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tournament")
     @NotEmpty(message = "Participants cannot be empty")
     @Size(min = 7, message = "Tournament must have at least 7 participants")
     private Set<Participant> participants;
 
-    private int matchesNumber = (participants.size() + 1) / 2;
+    private int matchesNumber;
 }
