@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/tournament")
 @AllArgsConstructor
@@ -26,9 +28,9 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.getById(id));
     }
 
-    @GetMapping("/{tournamentId}/add-participant{participantId}")
+    @PostMapping("/{tournamentId}/add-participant")
     public ResponseEntity<TournamentDto> addParticipant(@PathVariable Long tournamentId,
-                                                        @PathVariable Long participantId) {
-        return ResponseEntity.ok(tournamentService.addParticipantInTournament(tournamentId, participantId));
+                                                        @RequestBody Set<Long> participantsIds) {
+        return ResponseEntity.ok(tournamentService.addParticipantInTournament(tournamentId, participantsIds));
     }
 }

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -21,7 +22,6 @@ public class TournamentService {
     private TournamentMatchesLayerGenerator matchesLayerGenerator;
     private TournamentMapper tournamentMapper;
     private ParticipantRepository participantRepository;
-    private ParticipantService participantService;
 
     public GeneratedTournament start(@NotNull Long tournamentId) {
         Tournament tournament = getTournamentIfExist(tournamentId);
@@ -48,12 +48,13 @@ public class TournamentService {
         return tournamentMapper.entityToDto(saved);
     }
 
-    public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotNull Long participantId) {
+    public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
         Tournament tournament = getTournamentIfExist(tournamentId);
-        Participant participant = participantService.getParticipantIfExist(participantId);
         Set<Participant> participants = tournament.getParticipants();
-        participants.add(participant);
+        Set<Participant> foundParticipants = participantRepository.findAllByIdIn(participantsIds);
+        participants.addAll(foundParticipants);
         return tournamentMapper.entityToDto(tournament);
+
     }
 
     public TournamentDto getById(@NotNull Long id) {
