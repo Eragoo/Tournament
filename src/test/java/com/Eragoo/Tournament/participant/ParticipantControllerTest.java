@@ -31,7 +31,7 @@ public class ParticipantControllerTest {
 
     @Test
     public void getAllReturns200() throws Exception {
-        when(participantService.getAll()).thenReturn(Set.of(new ParticipantDto(1L, "Joe")));
+        when(participantService.getAll()).thenReturn(Set.of(new ParticipantDto(1L, "Joe", null)));
         mockMvc.perform(get("/api/participant"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -39,7 +39,7 @@ public class ParticipantControllerTest {
 
     @Test
     public void saveParticipantWithBlankNameReturns400() throws Exception {
-        ParticipantCommand participantCommand = new ParticipantCommand("");
+        ParticipantCommand participantCommand = new ParticipantCommand("", null);
 
         mockMvc.perform(post("/api/participant", participantCommand))
                 .andExpect(status().isBadRequest());
@@ -47,9 +47,9 @@ public class ParticipantControllerTest {
 
     @Test
     public void saveCorrectParticipantReturns200() throws Exception {
-        ParticipantCommand participantCommand = new ParticipantCommand("Joe");
+        ParticipantCommand participantCommand = new ParticipantCommand("Joe", null);
         String requestJson = "{\"name\":\"Joe\"}";
-        when(participantService.create(participantCommand)).thenReturn(new ParticipantDto(1L, "Joe"));
+        when(participantService.create(participantCommand)).thenReturn(new ParticipantDto(1L, "Joe", null));
 
         mockMvc.perform(post("/api/participant")
                 .contentType(APPLICATION_JSON_UTF8)

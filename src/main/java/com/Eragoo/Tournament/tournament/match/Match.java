@@ -21,9 +21,9 @@ public class Match {
     @ManyToOne
     private Participant redParticipant;
 
-    private Long blueScore = 0L;
+    private long blueScore;
 
-    private Long redScore = 0L;
+    private long redScore;
 
     private Instant startTime;
 

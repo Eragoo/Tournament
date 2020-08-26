@@ -14,6 +14,7 @@ import java.util.Objects;
 public class ParticipantDto {
     private long id;
     private String name;
+    private Long tournamentId;
 
     @Override
     public boolean equals(Object o) {

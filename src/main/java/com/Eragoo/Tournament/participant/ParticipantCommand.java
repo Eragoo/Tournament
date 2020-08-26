@@ -16,4 +16,6 @@ public class ParticipantCommand {
     @NotBlank
     @Size(max = 50, message = "\"name\" field must be not blank and under 50 characters")
     private String name;
+
+    private Long tournamentId;
 }
