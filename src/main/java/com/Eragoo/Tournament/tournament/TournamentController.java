@@ -25,4 +25,10 @@ public class TournamentController {
     public ResponseEntity<TournamentDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(tournamentService.getById(id));
     }
+
+    @GetMapping("/{tournamentId}/add-participant{participantId}")
+    public ResponseEntity<TournamentDto> addParticipant(@PathVariable Long tournamentId,
+                                                        @PathVariable Long participantId) {
+        return ResponseEntity.ok(tournamentService.addParticipantInTournament(tournamentId, participantId));
+    }
 }

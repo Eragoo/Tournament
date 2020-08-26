@@ -31,7 +31,7 @@ public class ParticipantService {
         participantRepository.delete(participant);
     }
 
-    private Participant getParticipantIfExist(long id) {
+    public Participant getParticipantIfExist(long id) {
         return participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Participant with id " + id + " not found"));
     }

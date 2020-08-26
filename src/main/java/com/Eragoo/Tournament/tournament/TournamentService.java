@@ -4,14 +4,13 @@ import com.Eragoo.Tournament.error.exception.ConflictException;
 import com.Eragoo.Tournament.error.exception.NotFoundException;
 import com.Eragoo.Tournament.participant.Participant;
 import com.Eragoo.Tournament.participant.ParticipantRepository;
+import com.Eragoo.Tournament.participant.ParticipantService;
 import com.Eragoo.Tournament.tournament.match.MatchDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.*;
 
 @Service
@@ -22,6 +21,7 @@ public class TournamentService {
     private TournamentMatchesLayerGenerator matchesLayerGenerator;
     private TournamentMapper tournamentMapper;
     private ParticipantRepository participantRepository;
+    private ParticipantService participantService;
 
     public GeneratedTournament start(@NotNull Long tournamentId) {
         Tournament tournament = getTournamentIfExist(tournamentId);
@@ -46,6 +46,14 @@ public class TournamentService {
         tournament.setMatchesNumber(matchesNumber);
         Tournament saved = tournamentRepository.save(tournament);
         return tournamentMapper.entityToDto(saved);
+    }
+
+    public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotNull Long participantId) {
+        Tournament tournament = getTournamentIfExist(tournamentId);
+        Participant participant = participantService.getParticipantIfExist(participantId);
+        Set<Participant> participants = tournament.getParticipants();
+        participants.add(participant);
+        return tournamentMapper.entityToDto(tournament);
     }
 
     public TournamentDto getById(@NotNull Long id) {
