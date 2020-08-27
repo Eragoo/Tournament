@@ -39,7 +39,7 @@ public class TournamentService {
     public TournamentDto create(@NotNull TournamentCommand tournamentCommand) {
         Tournament tournament = tournamentMapper.commandToEntity(tournamentCommand);
         Set<Long> participantsIds = tournamentCommand.getParticipantsIds();
-        Set<Participant> participants = participantRepository.findAllByIdIn(participantsIds);
+        Set<Participant> participants = getParticipantsWithTournament(participantsIds, tournament);
         validateParticipantsNumber(participants);
         tournament.setParticipants(participants);
         int matchesNumber = (participants.size() + 1) / 2;
@@ -48,21 +48,25 @@ public class TournamentService {
         return tournamentMapper.entityToDto(saved);
     }
 
+    public TournamentDto getById(@NotNull Long id) {
+        Tournament tournament = getTournamentIfExist(id);
+        return tournamentMapper.entityToDto(tournament);
+    }
+
     public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
         Tournament tournament = getTournamentIfExist(tournamentId);
         Set<Participant> participants = tournament.getParticipants();
-        Set<Participant> foundParticipants = participantRepository.findAllByIdIn(participantsIds)
-                .stream()
-                .peek(el-> el.setTournament(tournament))
-                .collect(Collectors.toSet());
+        Set<Participant> foundParticipants = getParticipantsWithTournament(participantsIds, tournament);
 
         participants.addAll(foundParticipants);
         return tournamentMapper.entityToDto(tournament);
     }
 
-    public TournamentDto getById(@NotNull Long id) {
-        Tournament tournament = getTournamentIfExist(id);
-        return tournamentMapper.entityToDto(tournament);
+    private Set<Participant> getParticipantsWithTournament(@NotEmpty Set<Long> participantsIds, Tournament tournament) {
+        return participantRepository.findAllByIdIn(participantsIds)
+                    .stream()
+                    .peek(el-> el.setTournament(tournament))
+                    .collect(Collectors.toSet());
     }
 
     private void validateParticipantsNumber(Set<Participant> participants) {
