@@ -4,7 +4,6 @@ import com.Eragoo.Tournament.error.exception.ConflictException;
 import com.Eragoo.Tournament.error.exception.NotFoundException;
 import com.Eragoo.Tournament.participant.Participant;
 import com.Eragoo.Tournament.participant.ParticipantRepository;
-import com.Eragoo.Tournament.participant.ParticipantService;
 import com.Eragoo.Tournament.tournament.match.MatchDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,10 +51,13 @@ public class TournamentService {
     public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
         Tournament tournament = getTournamentIfExist(tournamentId);
         Set<Participant> participants = tournament.getParticipants();
-        Set<Participant> foundParticipants = participantRepository.findAllByIdIn(participantsIds);
+        Set<Participant> foundParticipants = participantRepository.findAllByIdIn(participantsIds)
+                .stream()
+                .peek(el-> el.setTournament(tournament))
+                .collect(Collectors.toSet());
+
         participants.addAll(foundParticipants);
         return tournamentMapper.entityToDto(tournament);
-
     }
 
     public TournamentDto getById(@NotNull Long id) {

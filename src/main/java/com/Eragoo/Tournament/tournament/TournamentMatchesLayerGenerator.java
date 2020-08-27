@@ -1,6 +1,5 @@
 package com.Eragoo.Tournament.tournament;
 
-import com.Eragoo.Tournament.error.exception.ConflictException;
 import com.Eragoo.Tournament.participant.Participant;
 import com.Eragoo.Tournament.tournament.match.Match;
 import com.Eragoo.Tournament.tournament.match.MatchDto;
@@ -10,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,23 +37,23 @@ public class TournamentMatchesLayerGenerator {
         if (participants.size() == 1) {
             return getSingleParticipantMatch(participants);
         }
-
-        Match match = new Match();
-
         Participant blueRandomParticipant = getRandomParticipant(participants);
         Participant redRandomParticipant = getRandomParticipant(participants);
 
+        return generateMatch(blueRandomParticipant, redRandomParticipant);
+    }
+
+    private Match generateMatch(@NotNull Participant blueRandomParticipant, Participant redRandomParticipant) {
+        Match match = new Match();
         match.setBlueParticipant(blueRandomParticipant);
         match.setRedParticipant(redRandomParticipant);
-
+        match.setTournament(blueRandomParticipant.getTournament());
         return match;
     }
 
     private Match getSingleParticipantMatch(@NotEmpty Set<Participant> participants) {
-        Match match = new Match();
         Participant blueRandomParticipant = getRandomParticipant(participants);
-        match.setBlueParticipant(blueRandomParticipant);
-        return match;
+        return generateMatch(blueRandomParticipant, null);
     }
 
     private Participant getRandomParticipant(Set<Participant> participants) {

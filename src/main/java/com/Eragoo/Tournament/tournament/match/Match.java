@@ -1,6 +1,7 @@
 package com.Eragoo.Tournament.tournament.match;
 
 import com.Eragoo.Tournament.participant.Participant;
+import com.Eragoo.Tournament.tournament.Tournament;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,10 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
 
     @ManyToOne
     private Participant blueParticipant;
