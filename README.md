@@ -1,10 +1,10 @@
 # Tournament
 ## Overview
  #### Tech stack:
- - Spring Boot, Data, Security
+ - Spring Boot, Data
  - Hibernate, PostgresDB, Flyway
  - Maven, Swagger
- - Lombok, Hibernate JPA model generator
+ - Lombok
 
 ### Tournament flow:
  1) Create participants
