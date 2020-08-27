@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -27,4 +28,19 @@ public class Tournament {
     private Set<Participant> participants;
 
     private int matchesNumber;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tournament that = (Tournament) o;
+        return id == that.id &&
+                matchesNumber == that.matchesNumber &&
+                participants.equals(that.participants);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, participants, matchesNumber);
+    }
 }
