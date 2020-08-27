@@ -3,7 +3,7 @@
  #### Tech stack:
  - Spring Boot, Data
  - Hibernate, PostgresDB, Flyway
- - Maven, Swagger
+ - Gradle, Swagger
  - Lombok
 
 ### Tournament flow:
