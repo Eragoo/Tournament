@@ -18,4 +18,5 @@ public class MatchDto {
     private long redScore;
     private Instant startTime;
     private Instant finishTime;
+    private boolean isActive;
 }

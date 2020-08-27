@@ -33,4 +33,6 @@ public class Match {
     private Instant startTime;
 
     private Instant finishTime;
+
+    private boolean isActive = true;
 }

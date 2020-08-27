@@ -11,9 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -28,10 +26,9 @@ public class MatchService {
         Match match = getMatchIfExist(id);
         validateMatchParticipants(match);
         playMatch(match);
+        inactivateMatch(match);
         Participant winner = getWinner(match);
-        Tournament tournament = match.getTournament();
-        removeLoosedParticipantFromTournament(tournament, match, winner);
-        tournamentRepository.save(tournament);
+        removeLoosedParticipantFromTournament(match, winner);
 
         long scoreDiff = countMatchScore(match);
         ParticipantDto winnerDto = participantMapper.entityToDto(winner);
@@ -59,27 +56,26 @@ public class MatchService {
         return match.getBlueScore() > match.getRedScore() ? match.getBlueParticipant() : match.getRedParticipant();
     }
 
-    private void removeLoosedParticipantFromTournament(@NotNull Tournament tournament,
-                                                       @NotNull Match match,
-                                                       Participant winner) {
-        Set<Participant> participants = tournament.getParticipants();
-        removeLoosedParticipantFromCollection(participants, match, winner);
-        tournament.setParticipants(participants);
+    private void removeLoosedParticipantFromTournament(@NotNull Match match, Participant winner) {
+        Participant loosedParticipant = getLoosedParticipant(match, winner);
+        loosedParticipant.setTournament(null);
     }
 
-    private void removeLoosedParticipantFromCollection(@NotEmpty Set<Participant> participants,
-                                                                   @NotNull Match match,
-                                                                   @NotNull Participant winner) {
+    private Participant getLoosedParticipant(@NotNull Match match, @NotNull Participant winner) {
         Participant blueParticipant = match.getBlueParticipant();
         Participant redParticipant = match.getRedParticipant();
         if (blueParticipant.equals(winner)) {
-            participants.remove(redParticipant);
+            return redParticipant;
         } else {
-            participants.remove(blueParticipant);
+            return blueParticipant;
         }
     }
 
     private void playMatch(@NotNull Match match) {
         scoresDecisionManager.setMatchScores(match);
+    }
+
+    private void inactivateMatch(@NotNull Match match) {
+        match.setActive(false);
     }
 }

@@ -48,6 +48,7 @@ public class TournamentMatchesLayerGenerator {
         match.setBlueParticipant(blueRandomParticipant);
         match.setRedParticipant(redRandomParticipant);
         match.setTournament(blueRandomParticipant.getTournament());
+        match.setActive(true);
         return match;
     }
 
