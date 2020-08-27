@@ -1,6 +1,7 @@
 package com.Eragoo.Tournament.tournament.match;
 
 import com.Eragoo.Tournament.participant.Participant;
+import com.Eragoo.Tournament.tournament.Tournament;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,16 +17,22 @@ public class Match {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+
+    @ManyToOne
     private Participant blueParticipant;
 
     @ManyToOne
     private Participant redParticipant;
 
-    private Long blueScore = 0L;
+    private long blueScore;
 
-    private Long redScore = 0L;
+    private long redScore;
 
     private Instant startTime;
 
     private Instant finishTime;
+
+    private boolean isActive = true;
 }
