@@ -23,6 +23,12 @@ public class TournamentService {
     private TournamentMapper tournamentMapper;
     private ParticipantRepository participantRepository;
 
+    public TournamentDto holdTournament(@NotNull Long tournamentId) {
+        Tournament tournament = getTournamentIfExist(tournamentId);
+        tournament.setOnHold(true);
+        return tournamentMapper.entityToDto(tournament);
+    }
+
     public GeneratedTournament start(@NotNull Long tournamentId) {
         Tournament tournament = getTournamentIfExist(tournamentId);
 
@@ -39,7 +45,8 @@ public class TournamentService {
     public TournamentDto create(@NotNull TournamentCommand tournamentCommand) {
         Tournament tournament = tournamentMapper.commandToEntity(tournamentCommand);
         Set<Long> participantsIds = tournamentCommand.getParticipantsIds();
-        Set<Participant> participants = getParticipantsWithTournament(participantsIds, tournament);
+        Set<Participant> participants = getParticipantsByIds(participantsIds);
+        addTournamentInParticipants(participants, tournament);
         validateParticipantsNumber(participants);
         tournament.setParticipants(participants);
         int matchesNumber = (participants.size() + 1) / 2;
@@ -53,20 +60,49 @@ public class TournamentService {
         return tournamentMapper.entityToDto(tournament);
     }
 
-    public TournamentDto addParticipantInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
+    public TournamentDto addParticipantsInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
         Tournament tournament = getTournamentIfExist(tournamentId);
         Set<Participant> participants = tournament.getParticipants();
-        Set<Participant> foundParticipants = getParticipantsWithTournament(participantsIds, tournament);
+        Set<Participant> foundParticipants = getParticipantsByIds(participantsIds);
+        Collection<Participant> participantWithTournament = addTournamentInParticipants(foundParticipants, tournament);
 
-        participants.addAll(foundParticipants);
+        participants.addAll(participantWithTournament);
         return tournamentMapper.entityToDto(tournament);
     }
 
-    private Set<Participant> getParticipantsWithTournament(@NotEmpty Set<Long> participantsIds, Tournament tournament) {
-        return participantRepository.findAllByIdIn(participantsIds)
-                    .stream()
-                    .peek(el-> el.setTournament(tournament))
-                    .collect(Collectors.toSet());
+    public TournamentDto removeParticipantsInTournament(@NotNull Long tournamentId, @NotEmpty Set<Long> participantsIds) {
+        Tournament tournament = getTournamentIfExist(tournamentId);
+        checkTournamentIsOnHold(tournament);
+        Set<Participant> participants = tournament.getParticipants();
+        Set<Participant> foundParticipants = getParticipantsByIds(participantsIds);
+        Collection<Participant> participantsWithoutTournament = removeTournamentInParticipants(foundParticipants);
+        participants.removeAll(participantsWithoutTournament);
+        return tournamentMapper.entityToDto(tournament);
+    }
+
+    private void checkTournamentIsOnHold(Tournament tournament) {
+        if (!tournament.isOnHold()) {
+            throw new ConflictException("Tournament must be on hold");
+        }
+    }
+
+    private Collection<Participant> addTournamentInParticipants(@NotEmpty Collection<Participant> participants,
+                                                         @NotNull Tournament tournament) {
+        for (Participant participant: participants) {
+            participant.setTournament(tournament);
+        }
+        return participants;
+    }
+
+    private Collection<Participant> removeTournamentInParticipants(@NotEmpty Collection<Participant> participants) {
+        for (Participant participant: participants) {
+            participant.setTournament(null);
+        }
+        return participants;
+    }
+
+    private Set<Participant> getParticipantsByIds(@NotEmpty Set<Long> participantsIds) {
+        return participantRepository.findAllByIdIn(participantsIds);
     }
 
     private void validateParticipantsNumber(Set<Participant> participants) {

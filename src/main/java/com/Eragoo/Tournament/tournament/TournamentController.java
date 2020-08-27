@@ -31,6 +31,17 @@ public class TournamentController {
     @PostMapping("/{tournamentId}/add-participant")
     public ResponseEntity<TournamentDto> addParticipant(@PathVariable Long tournamentId,
                                                         @RequestBody Set<Long> participantsIds) {
-        return ResponseEntity.ok(tournamentService.addParticipantInTournament(tournamentId, participantsIds));
+        return ResponseEntity.ok(tournamentService.addParticipantsInTournament(tournamentId, participantsIds));
+    }
+
+    @PostMapping("/{tournamentId}/remove-participant")
+    public ResponseEntity<TournamentDto> removeParticipant(@PathVariable Long tournamentId,
+                                                        @RequestBody Set<Long> participantsIds) {
+        return ResponseEntity.ok(tournamentService.removeParticipantsInTournament(tournamentId, participantsIds));
+    }
+
+    @GetMapping("/{tournamentId}/hold")
+    public ResponseEntity<TournamentDto> holdParticipant(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.holdTournament(tournamentId));
     }
 }

@@ -29,6 +29,8 @@ public class Tournament {
 
     private int matchesNumber;
 
+    private boolean isOnHold = false;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

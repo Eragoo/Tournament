@@ -6,7 +6,6 @@ import com.Eragoo.Tournament.participant.Participant;
 import com.Eragoo.Tournament.participant.ParticipantDto;
 import com.Eragoo.Tournament.participant.ParticipantMapper;
 import com.Eragoo.Tournament.tournament.Tournament;
-import com.Eragoo.Tournament.tournament.TournamentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,6 @@ public class MatchService {
     private RandomMatchScoresDecisionManager scoresDecisionManager;
     private ParticipantMapper participantMapper;
     private MatchRepository matchRepository;
-    private TournamentRepository tournamentRepository;
 
     public MatchResults getResults(long id) {
         Match match = getMatchIfExist(id);
